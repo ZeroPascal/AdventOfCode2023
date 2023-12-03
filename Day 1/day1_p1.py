@@ -1,3 +1,5 @@
+import time
+startTime = time.time()
 input = open("input.txt", "r")
 
 sum = 0
@@ -20,3 +22,4 @@ for line in input.readlines():
     sum += int(line[first_digit_index]+''+line[last_digit_index])
 
 print(str(sum))
+print (time.time()-startTime)
