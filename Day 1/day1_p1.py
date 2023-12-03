@@ -19,7 +19,15 @@ for line in input.readlines():
             break
         except:
             last_digit_index-=1
-    sum += int(line[first_digit_index]+''+line[last_digit_index])
+    first_digit_value=0
+    try:
+        first_digit_value=int(line[first_digit_index])
+    except:
+        pass
+    try:
+        sum += int(line[first_digit_index]+''+line[last_digit_index])
+    except:
+        sum += int(first_digit_value)
 
 print(str(sum))
 print (time.time()-startTime)
