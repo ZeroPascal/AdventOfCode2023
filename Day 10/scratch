@@ -1,0 +1,56 @@
+  if(grid[y][x] in ['X','^','V','>','<']):
+            while(y>0 and grid[y-1][x]=='.'):
+                    y-=1
+                    grid[y][x]='^'
+                    while(x<len(grid[0])-1 and grid[y][x+1]=='.'):
+                        x+=1
+                        grid[y][x]='>'
+                    x=oX
+                    while(x>0 and grid[y][x-1]=='.'):
+                        x-=1
+                        grid[y][x]='<'
+            y=oY
+            x=oX
+            while(y<len(grid)-1 and grid[y+1][x]=='.'):
+                    y+=1
+                    grid[y][x]='V'
+                    while(x<len(grid[0])-1 and grid[y][x+1]=='.'):
+                        x+=1
+                        grid[y][x]='>'
+                    x=oX
+                    while(x>0 and grid[y][x-1]=='.'):
+                        x-=1
+                        grid[y][x]='<'   
+        return grid
+
+
+
+
+
+def tracePockets():
+    if(x>1 and (grid[y][x] in ['J','K','L','7','F','|','V'] and grid[y][x-1] in ['J','K','L','7','F','|','V']) ):
+        grid[y][x]='V'
+        grid[y][x-1]='V'
+        if(previous!='North' and  y<len(grid)-1): 
+            grid=tranceDot(x,y+1,grid,'South')
+        if(previous!='South' and y-1>0):
+            grid=tranceDot(x,y-1,grid,'North')
+
+    if(x<len(grid[0])-1 and (grid[y][x] in ['J','K','L','7','F','|','V'] and grid[y][x+1] in ['J','K','L','7','F','|','V']) ):
+        grid[y][x]='V'
+        grid[y][x+1]='V'
+        if(previous!='North' and  y<len(grid)-1): 
+            grid=tranceDot(x,y+1,grid,'South')
+        if(previous!='South' and y-1>0):
+            grid=tranceDot(x,y-1,grid,'North')
+
+
+..........
+.S------7.
+.|F----7|.
+.||....||.
+.||....||.
+.|L-7F-J|.
+.|..||..|.
+.L--JL--J.
+..........

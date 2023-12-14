@@ -1,6 +1,6 @@
 import time
 startTime = time.time()
-input = open("input.txt", "r").readlines()
+input = open("inputTest.txt", "r").readlines()
 
 cleanInput = []
 for line in input:
@@ -143,11 +143,136 @@ def plotPath(path, mainMap):
         print(a)
         a=''
 
+def updateMap(path, mainMap):
+    grid=[]
+    for i in range(len(mainMap)):
+        l = []
+        for n in range(len(mainMap[0])):
+            l.append(".")
+        grid.append(l)
+    for p in path:
+       # print('p',p)
+        grid[p[0]][p[1]]=mainMap[p[0]][p[1]]['c']
+    return grid
+
 #plotPath(path, cleanInput)
 #print(len(path))
 
-#-2 Removes both instances of start, odd even because math hard.
-if(len(path)%2==0):
-    print((len(path)-2)//2)
-else:
-    print((len(path)-2)//2+1)
+updatedGrid = updateMap(path,cleanInput)
+
+def checkSides(y,x,grid):
+
+    if (grid[y][x] in ['X','Z','<','>','^','V','*','S']):
+            if(grid[y][x] not in ['>','<']):
+                if(y>0 and grid[y-1][x] in ['.']):
+                    grid[y-1][x]='X'
+                    grid= checkSides(y-1,x,grid)
+                
+                if(y<len(grid)-1 and grid[y+1][x] in ['.']):
+                    grid[y+1][x]='X'
+                    grid =checkSides(y+1,x,grid)
+
+            if(grid[y][x] not in ['V','^']):
+                if(x>0 and grid[y][x-1] in ['.']):
+                    grid[y][x-1]='X'
+                    grid = checkSides(y,x-1,grid)
+                
+                if(x<len(grid[0])-1 and grid[y][x+1] in ['.']):
+                    grid[y][x+1]='X'
+                    grid = checkSides(y,x+1,grid)
+          
+            vertColsLeft = ['L','F','|'] 
+            vertColsRight= ['J','7','|'] 
+            oY=y
+            while(y<len(grid)-1):
+                y+=1
+                if(x>1 and (grid[y][x] in vertColsLeft and grid[y][x-1] in vertColsRight) ):
+                        grid[y][x]='V'
+                        grid[y][x-1]='V'
+                    
+                if(x<len(grid[0])-1 and grid[y][x] in vertColsRight and grid[y][x+1] in  vertColsLeft ):
+                        grid[y+1][x]='V'
+                        grid[y+1][x+1]='V'
+            y= oY        #    grid=checkSides(y+1,x,grid,)
+            while(y>0):
+                y-=1    
+                if(x>1 and (grid[y][x] in vertColsLeft and grid[y][x-1] in vertColsRight) ):
+                        grid[y][x]='^'
+                        grid[y][x-1]='^'
+                     #   grid=checkSides(y-1,x,grid)
+
+                if(x<len(grid[0])-1 and (grid[y][x] in vertColsRight and grid[y][x+1] in vertColsLeft) ):
+                        grid[y][x]='^'
+                        grid[y][x+1]='^'
+                        grid=checkSides(y,x,grid)
+            y=oY
+            horzColTop= ['7','F','-']
+            horzColBottom=['J','L','-'] 
+            oX=x
+            while(x<len(grid[0])-2):
+                x+=1
+                if(y>1 and (grid[y][x] in horzColBottom and grid[y-1][x] in horzColTop) ):
+                        grid[y][x]='>'
+                        grid[y-1][x]='>'
+                       # grid=checkSides(y-1,x+1,grid)
+    
+                if(y<len(grid)-1 and grid[y][x] in horzColTop and grid[y+1][x] in  horzColBottom ):
+                        grid[y][x]='>'
+                        grid[y+1][x]='>'
+                    #    grid=checkSides(y+1,x,grid)
+            x=oX
+            while(x>0):
+                x-=1
+                if(y>0 and (grid[y][x] in horzColBottom and grid[y-1][x] in horzColTop) ):
+                        grid[y-1][x]='>'
+                        grid[y-1][x]='>'
+                  #      grid=checkSides(y-1,x-1,grid)
+ 
+                if(y<len(grid)-1 and grid[y][x-1] in horzColTop and grid[y+1][x] in  horzColBottom ):
+                        grid[y+1][x]='>'
+                        grid[y+1][x]='>'
+                      #  grid=checkSides(y+1,x-1,grid)
+    else:
+         print('nope')
+      
+           
+
+        
+    return grid
+
+def plotGrid(grid):
+    a=''
+    for line in grid:
+        for l in line:
+            a+=l
+        print(a)
+        a=''
+    print()
+
+def tranceGrid(x,y,grid):
+        if(y<1 or y==len(grid)-1 or x<1 or x==len(grid[0])-1):   
+            if(grid[y][x] in ['X','.','*','<','>','^','V']):
+                grid[y][x]='X'
+                grid =checkSides(y,x,grid)
+                time.sleep(.1)
+                plotGrid(grid)
+
+        return grid
+ 
+for y in range(len(updatedGrid)):
+    line = updatedGrid[y]
+    for x in range(len(line)):
+      #  if(line[x] and line[x] in ['.','X']):
+            updatedGrid=tranceGrid(x,y,updatedGrid)
+
+sum=0
+a=''
+for line in updatedGrid:
+    for l in line:
+        if(l=='.'):
+             sum+=1
+        a+=l
+    print(a)
+    a=''
+
+print(sum)
